@@ -1,5 +1,6 @@
 package com.example.jobmanager
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -22,6 +23,8 @@ class UserConfigActivity : AppCompatActivity() {
     private lateinit var deleteButton: Button
     private lateinit var databaseHandler: DatabaseHandler
     private lateinit var currentUser: User
+    private lateinit var registerButton: Button
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +75,12 @@ class UserConfigActivity : AppCompatActivity() {
             databaseHandler.deleteUser(currentUser)
             Toast.makeText(this, "Usuario eliminado", Toast.LENGTH_SHORT).show()
             finish()
+        }
+
+        registerButton = findViewById(R.id.registerButton)
+        registerButton.setOnClickListener {
+            val intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
         }
     }
 }
