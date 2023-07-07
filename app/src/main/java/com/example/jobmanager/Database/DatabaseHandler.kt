@@ -37,6 +37,7 @@ class DatabaseHandler constructor(context: Context) :
         fun getInstance(context: Context): DatabaseHandler {
             if (instance == null) {
                 instance = DatabaseHandler(context.applicationContext)
+
             }
             return instance as DatabaseHandler
         }
