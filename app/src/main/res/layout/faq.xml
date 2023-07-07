@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16sp"
+    android:background="@android:color/white"
+    tools:context=".FAQActivity">
+
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Preguntas Frecuentes"
+        android:textSize="24sp"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="16sp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0sp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Pregunta 1 -->
+            <TextView
+                android:id="@+id/question1TextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="¿Cómo puedo agregar un nuevo horario de trabajo?"
+                android:textSize="18sp"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"
+                android:paddingBottom="8sp" />
+
+            <TextView
+                android:id="@+id/answer1TextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Para agregar un nuevo horario de trabajo, sigue los siguientes pasos:\n\n1. Abre la aplicación y ve a la sección de Horarios.\n2. Pulsa el botón 'Agregar Horario'.\n3. Completa los detalles del nuevo horario, como fecha, hora de inicio y hora de fin.\n4. Pulsa el botón 'Guardar' para guardar el horario de trabajo.\n\n¡Listo! El nuevo horario se agregará a tu lista de horarios de trabajo."
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:paddingBottom="16sp" />
+
+            <!-- Pregunta 2 -->
+            <TextView
+                android:id="@+id/question2TextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="¿Cómo puedo editar o eliminar un horario existente?"
+                android:textSize="18sp"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"
+                android:paddingBottom="8sp" />
+
+            <TextView
+                android:id="@+id/answer2TextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Para editar o eliminar un horario existente, realiza lo siguiente:\n\n1. Abre la aplicación y ve a la sección de Horarios.\n2. Encuentra el horario que deseas editar o eliminar en la lista.\n3. Si deseas editar, selecciona el horario y pulsa el botón 'Editar'. Realiza los cambios necesarios y pulsa el botón 'Guardar' para aplicar los cambios.\n4. Si deseas eliminar, selecciona el horario y pulsa el botón 'Eliminar'. Confirma la eliminación cuando se te solicite.\n\n¡Listo! El horario existente se actualizará o eliminará según tus acciones."
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:paddingBottom="16sp" />
+
+            <!-- Pregunta 3 -->
+            <TextView
+                android:id="@+id/question3TextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="¿Cómo puedo exportar mis horarios de trabajo?"
+                android:textSize="18sp"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"
+                android:paddingBottom="8sp" />
+
+            <TextView
+                android:id="@+id/answer3TextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Para exportar tus horarios de trabajo, sigue estos pasos:\n\n1. Abre la aplicación y ve a la sección de Configuración.\n2. Busca la opción 'Exportar horarios' y pulsa sobre ella.\n3. Elige el formato de exportación deseado, como CSV o PDF.\n4. Selecciona la ubicación de almacenamiento para el archivo exportado.\n5. Pulsa el botón 'Exportar' para generar el archivo con tus horarios de trabajo.\n\n¡Listo! Ahora podrás encontrar el archivo exportado en la ubicación especificada."
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:paddingBottom="16sp" />
+
+            <!-- Más preguntas y respuestas... -->
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
