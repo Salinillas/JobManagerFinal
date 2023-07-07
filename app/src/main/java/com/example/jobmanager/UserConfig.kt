@@ -46,10 +46,10 @@ class UserConfigActivity : AppCompatActivity() {
         databaseHandler = DatabaseHandler.getInstance(this)
 
         val username = userEditText.text.toString()
-        currentUser = databaseHandler.getUser(username)!!
-        nameEditText.setText(currentUser.name)
-        userEditText.setText(currentUser.username)
-        passwordEditText.setText(currentUser.password)
+        //currentUser = databaseHandler.getUser(username)!!
+        //nameEditText.setText(currentUser.name)
+        //userEditText.setText(currentUser.username)
+        //passwordEditText.setText(currentUser.password)
 
         cancelButton.setOnClickListener {
             finish()

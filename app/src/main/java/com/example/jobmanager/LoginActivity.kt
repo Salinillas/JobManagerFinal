@@ -23,11 +23,11 @@ class LoginActivity : AppCompatActivity() {
 
         databaseHandler = DatabaseHandler.getInstance(this)
         val adminUser = User(1, "admin", "admin", "admin", true)
-//        databaseHandler.addOficina(Oficina(0, "Oficina 1", false))
-//        databaseHandler.addOficina(Oficina(1, "Oficina 2", false))
-//        databaseHandler.addOficina(Oficina(2, "Oficina 3", false))
-//        databaseHandler.addOficina(Oficina(3, "Oficina 4", false))
-//        databaseHandler.addOficina(Oficina(4, "Oficina 5", false))
+        databaseHandler.addOficina(Oficina(0, "Oficina 1", false))
+        databaseHandler.addOficina(Oficina(1, "Oficina 2", false))
+        databaseHandler.addOficina(Oficina(2, "Oficina 3", false))
+        databaseHandler.addOficina(Oficina(3, "Oficina 4", false))
+        databaseHandler.addOficina(Oficina(4, "Oficina 5", false))
         // Se agrega una verificación para evitar agregar el usuario administrador repetidamente
         val adminUserId = databaseHandler.addUser(adminUser)
 
