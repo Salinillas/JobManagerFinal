@@ -41,13 +41,10 @@ class UserConfigActivity : AppCompatActivity() {
         saveButton = findViewById(R.id.saveButton)
         deleteButton = findViewById(R.id.deleteButton)
 
-        // Set the title of the user settings activity
         titleTextView.text = "Configuración de Usuario"
 
-        // Set up database handler
         databaseHandler = DatabaseHandler.getInstance(this)
 
-        // Fetch and display user settings
         val username = userEditText.text.toString()
         //currentUser = databaseHandler.getUser(username)!!
         //nameEditText.setText(currentUser.name)
