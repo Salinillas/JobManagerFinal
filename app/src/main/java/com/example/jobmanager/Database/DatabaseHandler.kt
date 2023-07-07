@@ -170,7 +170,7 @@ class DatabaseHandler constructor(context: Context) :
         values.put(KEY_OFICINA, oficina)
         values.put(KEY_FECHA_ENTRADA, fechaEntrada)
         val id = db.insert(TABLE_FICHAJES, null, values)
-        db.close()
+        //db.close()
         return id
     }
 
@@ -232,7 +232,7 @@ class DatabaseHandler constructor(context: Context) :
             null
         }
         cursor.close()
-        db.close()
+        //db.close()
         return fichaje
     }
 
@@ -251,14 +251,15 @@ class DatabaseHandler constructor(context: Context) :
             fichajes.add(fichaje)
         }
         cursor.close()
-        db.close()
+        //db.close()
         return fichajes
     }
 
     fun getOficinasOcupadas(): List<Oficina> {
         val oficinasOcupadas = mutableListOf<Oficina>()
         val db = readableDatabase
-        val query = "SELECT * FROM $TABLE_FICHAJES WHERE $KEY_OFICINA <> ''"
+        val query =
+            "SELECT * FROM $TABLE_OFICINAS  WHERE $KEY_OCUPADA = 1"
         val cursor = db.rawQuery(query, null)
         while (cursor.moveToNext()) {
             val oficinaId = cursor.getInt(cursor.getColumnIndex(KEY_ID))
@@ -267,7 +268,7 @@ class DatabaseHandler constructor(context: Context) :
             oficinasOcupadas.add(oficina)
         }
         cursor.close()
-        db.close()
+        //db.close()
         return oficinasOcupadas
     }
 
@@ -275,7 +276,7 @@ class DatabaseHandler constructor(context: Context) :
         val oficinasDisponibles = mutableListOf<Oficina>()
         val db = readableDatabase
         val query =
-            "SELECT * FROM $TABLE_FICHAJES WHERE $KEY_OFICINA NOT IN (SELECT $KEY_OFICINA FROM $TABLE_FICHAJES WHERE $KEY_OFICINA = 1)"
+            "SELECT * FROM $TABLE_OFICINAS WHERE $KEY_OCUPADA = 0"
         val cursor = db.rawQuery(query, null)
         while (cursor.moveToNext()) {
             val oficinaId = cursor.getInt(cursor.getColumnIndex(KEY_ID))
@@ -293,7 +294,7 @@ class DatabaseHandler constructor(context: Context) :
         values.put(KEY_NAME, oficina.nombre)
         values.put(KEY_OCUPADA, if (oficina.ocupada) 1 else 0)
         val id = db.insert(TABLE_OFICINAS, null, values)
-        db.close()
+        //db.close()
         return id
     }
 
@@ -310,7 +311,7 @@ class DatabaseHandler constructor(context: Context) :
             null
         }
         cursor.close()
-        db.close()
+        //db.close()
         return oficina
     }
     fun cambiarEstadoOficina(nombre: String) {
@@ -322,7 +323,7 @@ class DatabaseHandler constructor(context: Context) :
             values.put(KEY_OCUPADA, if (nuevoEstado) 1 else 0)
             db.update(TABLE_OFICINAS, values, "$KEY_NAME = ?", arrayOf(nombre))
         }
-        db.close()
+        //db.close()
     }
     fun obtenerFechaHoraUltimoFichaje(oficina: String): String? {
         val db = readableDatabase
@@ -335,7 +336,7 @@ class DatabaseHandler constructor(context: Context) :
             null
         }
         cursor.close()
-        db.close()
+        //db.close()
         return fechaHora
     }
 
