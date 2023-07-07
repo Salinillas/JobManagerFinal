@@ -11,7 +11,8 @@ class FicharUsuario : AppCompatActivity() {
 
     private lateinit var disponiblesLayout: LinearLayout
     private lateinit var ocupadasLayout: LinearLayout
-    private lateinit var ficharButton: Button
+    private lateinit var btnFicharEntrada: Button
+    private lateinit var btnFicharSalida: Button
     private lateinit var oficinaEditText: EditText
     private lateinit var databaseHandler: DatabaseHandler
 
@@ -21,7 +22,8 @@ class FicharUsuario : AppCompatActivity() {
 
         disponiblesLayout = findViewById(R.id.disponiblesLayout)
         ocupadasLayout = findViewById(R.id.ocupadasLayout)
-        ficharButton = findViewById(R.id.ficharButton)
+        btnFicharEntrada = findViewById(R.id.btnFicharEntrada)
+        btnFicharSalida = findViewById(R.id.btnFicharSalida)
         oficinaEditText = findViewById(R.id.officeSelector)
 
         databaseHandler = DatabaseHandler.getInstance(this)
@@ -34,7 +36,9 @@ class FicharUsuario : AppCompatActivity() {
         val oficinasOcupadas = getOficinasOcupadas()
         mostrarOficinas(oficinasOcupadas, ocupadasLayout)
 
-        ficharButton.setOnClickListener {
+        btnFicharEntrada.setOnClickListener {
+            btnFicharEntrada.isEnabled = false
+            btnFicharSalida.isEnabled = true
             // Obtener la oficina seleccionada por el usuario
             val oficinaSeleccionada = obtenerOficinaSeleccionada()
             if (oficinaSeleccionada != null) {
@@ -47,12 +51,31 @@ class FicharUsuario : AppCompatActivity() {
                 // Mostrar un mensaje de éxito
                 mostrarMensaje("Fichaje realizado correctamente")
 
-                // Cerrar la actividad
-                //finish()
             } else {
                 mostrarMensaje("Por favor, seleccione una oficina")
             }
         }
+
+        btnFicharSalida.setOnClickListener {
+            btnFicharSalida.isEnabled = false
+            btnFicharEntrada.isEnabled = true
+            // Obtener la oficina seleccionada por el usuario
+            val oficinaSeleccionada = obtenerOficinaSeleccionada()
+            if (oficinaSeleccionada != null) {
+                // Obtener la fecha y hora actual
+                val fechaHoraActual = obtenerFechaHoraActual()
+
+                // Realizar el fichaje y almacenarlo en la base de datos
+                realizarFichaje(oficinaSeleccionada, fechaHoraActual)
+
+                // Mostrar un mensaje de éxito
+                mostrarMensaje("Fichaje de salida realizado correctamente")
+            } else {
+                mostrarMensaje("Por favor, seleccione una oficina")
+            }
+        }
+
+
     }
 
     private fun getOficinasDisponibles(): List<Oficina> {
@@ -94,5 +117,5 @@ class FicharUsuario : AppCompatActivity() {
 
     private fun mostrarMensaje(mensaje: String) {
         Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show()
-    }
+        }
 }

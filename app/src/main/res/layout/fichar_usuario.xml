@@ -3,15 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0sp"
-        android:layout_weight="1">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
     <TextView
         android:id="@+id/mensajeTextView"
         android:layout_width="match_parent"
@@ -55,14 +47,24 @@
         android:id="@+id/officeSelector"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Ingrese el número de la oficina" />
+        android:hint="Ingrese el número de la oficina"
+        android:minHeight="48dp" />
 
     <Button
-        android:id="@+id/ficharButton"
+        android:id="@+id/btnFicharEntrada"
+        android:layout_width="match_parent"
+        android:layout_marginTop="2sp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Fichar entrada" />
+
+    <Button
+        android:id="@+id/btnFicharSalida"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16sp"
-        android:text="Fichar" />
-        </LinearLayout>
-    </ScrollView>
+        android:layout_gravity="center"
+        android:text="Fichar salida" />
+
+
+
 </LinearLayout>

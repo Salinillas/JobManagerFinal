@@ -45,11 +45,7 @@ class UserConfigActivity : AppCompatActivity() {
 
         databaseHandler = DatabaseHandler.getInstance(this)
 
-        val username = userEditText.text.toString()
-        //currentUser = databaseHandler.getUser(username)!!
-        //nameEditText.setText(currentUser.name)
-        //userEditText.setText(currentUser.username)
-        //passwordEditText.setText(currentUser.password)
+
 
         cancelButton.setOnClickListener {
             finish()
@@ -69,7 +65,12 @@ class UserConfigActivity : AppCompatActivity() {
         }
 
         deleteButton.setOnClickListener {
-            databaseHandler.deleteUser(currentUser)
+            val username = userEditText.text.toString()
+            currentUser = databaseHandler.getUser(username)!!
+            nameEditText.setText(currentUser.name)
+            userEditText.setText(currentUser.username)
+            passwordEditText.setText(currentUser.password)
+            databaseHandler.deleteUser(username)
             Toast.makeText(this, "Usuario eliminado", Toast.LENGTH_SHORT).show()
             finish()
         }

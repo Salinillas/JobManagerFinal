@@ -153,13 +153,9 @@ class DatabaseHandler constructor(context: Context) :
         db.close()
     }
 
-    fun deleteUser(user: User) {
+    fun deleteUser(username: String) {
         val db = writableDatabase
-        db.delete(
-            TABLE_USERS,
-            "$KEY_ID = ?",
-            arrayOf(user.id.toString())
-        )
+        db.delete(TABLE_USERS, "$KEY_USERNAME = ?", arrayOf(username))
         db.close()
     }
 
@@ -259,30 +255,31 @@ class DatabaseHandler constructor(context: Context) :
         val oficinasOcupadas = mutableListOf<Oficina>()
         val db = readableDatabase
         val query =
-            "SELECT * FROM $TABLE_OFICINAS  WHERE $KEY_OCUPADA = 1"
+            "SELECT * FROM $TABLE_OFICINAS WHERE $KEY_OCUPADA = 1"
         val cursor = db.rawQuery(query, null)
         while (cursor.moveToNext()) {
             val oficinaId = cursor.getInt(cursor.getColumnIndex(KEY_ID))
-            val oficinaNombre = cursor.getString(cursor.getColumnIndex(KEY_OFICINA))
+            val oficinaNombre = cursor.getString(cursor.getColumnIndex(KEY_NAME))
             val oficina = Oficina(oficinaId, oficinaNombre, true)
             oficinasOcupadas.add(oficina)
         }
         cursor.close()
-        //db.close()
+        db.close()
         return oficinasOcupadas
     }
 
     fun getOficinasDisponibles(): List<Oficina> {
         val oficinasDisponibles = mutableListOf<Oficina>()
         val db = readableDatabase
-        val query =
-            "SELECT * FROM $TABLE_OFICINAS WHERE $KEY_OCUPADA = 0"
+        val query = "SELECT * FROM $TABLE_OFICINAS WHERE $KEY_OCUPADA = 0"
         val cursor = db.rawQuery(query, null)
-        while (cursor.moveToNext()) {
+        cursor.moveToFirst()
+        while (!cursor.isAfterLast) {
             val oficinaId = cursor.getInt(cursor.getColumnIndex(KEY_ID))
-            val oficinaNombre = cursor.getString(cursor.getColumnIndex(KEY_OFICINA))
+            val oficinaNombre = cursor.getString(cursor.getColumnIndex(KEY_NAME))
             val oficina = Oficina(oficinaId, oficinaNombre, false)
             oficinasDisponibles.add(oficina)
+            cursor.moveToNext()
         }
         cursor.close()
         db.close()
