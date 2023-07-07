@@ -33,7 +33,14 @@
             android:name=".FicharUsuario" />
 
         <activity
-            android:name=".MenuActivity" /> <!-- Agregado el nombre de la nueva actividad -->
+            android:name=".MenuActivity" />
+
+        <activity
+            android:name=".OficinasActivity" />
+        <activity
+            android:name=".UsuariosActivity" />
+        <activity
+            android:name=".UserConfigActivity" />
 
     </application>
 

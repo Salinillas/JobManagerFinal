@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:padding="16dp"
     android:background="@android:color/white"
-    tools:context=".UserConfigFragment">
+    tools:context=".UserConfigActivity">
 
     <TextView
         android:id="@+id/titleTextView"
