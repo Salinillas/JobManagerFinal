@@ -81,6 +81,7 @@ class DatabaseHandler constructor(context: Context) :
 
     fun addUser(user: User): Long {
         val db = writableDatabase
+        // Verificar si ya existe un usuario con el mismo nombre
         val values = ContentValues()
         values.put(KEY_NAME, user.name)
         values.put(KEY_USERNAME, user.username)
@@ -322,18 +323,17 @@ class DatabaseHandler constructor(context: Context) :
         }
         //db.close()
     }
-    fun obtenerFechaHoraUltimoFichaje(oficina: String): String? {
+    fun getUltimoFichajeByUser(username: String): String? {
         val db = readableDatabase
-        val query =
-            "SELECT $KEY_FECHA_SALIDA FROM $TABLE_FICHAJES WHERE $KEY_OFICINA = ? ORDER BY $KEY_FECHA_SALIDA DESC LIMIT 1"
-        val cursor = db.rawQuery(query, arrayOf(oficina))
+        val query = "SELECT $KEY_FECHA_SALIDA FROM $TABLE_FICHAJES WHERE $KEY_USERNAME = ? ORDER BY $KEY_FECHA_SALIDA DESC LIMIT 1"
+        val cursor = db.rawQuery(query, arrayOf(username))
         val fechaHora: String? = if (cursor.moveToFirst()) {
             cursor.getString(cursor.getColumnIndex(KEY_FECHA_SALIDA))
         } else {
             null
         }
         cursor.close()
-        //db.close()
+        db.close()
         return fechaHora
     }
 

@@ -21,20 +21,20 @@ class RegisterActivity : AppCompatActivity() {
 
         val buttonRegister = findViewById<Button>(R.id.registerButton)
         buttonRegister.setOnClickListener {
-            val id = findViewById<EditText>(R.id.idEditText).id
-            val name = findViewById<EditText>(R.id.nameEditText).text.toString()
-            val username = findViewById<EditText>(R.id.usernameEditText).text.toString()
+            val id = findViewById<EditText>(R.id.nameEditText).id
+            val name = findViewById<EditText>(R.id.napeEditText).text.toString()
+            val username = findViewById<EditText>(R.id.nameEditText).text.toString()
             val password = findViewById<EditText>(R.id.passwordEditText).text.toString()
+            val password2 = findViewById<EditText>(R.id.password2EditText).text.toString()
 
-            if (username.isNotEmpty() && password.isNotEmpty()) {
-                if (!databaseHelper.isUserExists(username)) {
+            if (username.isNotEmpty() && password.isNotEmpty() && password2.isNotEmpty()
+                && password==password2) {
+
                     val user = User(id, name, username, password, false)
                     databaseHelper.addUser(user)
                     Toast.makeText(this, "Usuario registrado correctamente", Toast.LENGTH_SHORT).show()
                     finish() // Finish the activity and return to the login screen
-                } else {
-                    Toast.makeText(this, "El usuario ya existe", Toast.LENGTH_SHORT).show()
-                }
+
             } else {
                 Toast.makeText(this, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show()
             }

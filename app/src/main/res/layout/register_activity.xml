@@ -16,13 +16,11 @@
         android:layout_marginBottom="16sp"/>
 
     <EditText
-        android:id="@+id/idEditText"
+        android:id="@+id/napeEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Nombre y apellidos"
-        android:inputType="text"
-        android:layout_marginTop="30sp"/>
-
+        android:inputType="text" />
     <EditText
         android:id="@+id/nameEditText"
         android:layout_width="match_parent"
@@ -31,14 +29,14 @@
         android:inputType="text"/>
 
     <EditText
-        android:id="@+id/usernameEditText"
+        android:id="@+id/passwordEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Contraseña"
         android:inputType="text"/>
 
     <EditText
-        android:id="@+id/passwordEditText"
+        android:id="@+id/password2EditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Repita su contraseña"
