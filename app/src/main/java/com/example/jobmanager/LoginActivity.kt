@@ -22,21 +22,22 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.login_activity)
 
         databaseHandler = DatabaseHandler.getInstance(this)
-        val adminUser = User(1, "admin", "admin", "admin", true)
-//        databaseHandler.addOficina(Oficina(0, "Oficina 1", false))
-//        databaseHandler.addOficina(Oficina(1, "Oficina 2", false))
-//        databaseHandler.addOficina(Oficina(2, "Oficina 3", false))
-//        databaseHandler.addOficina(Oficina(3, "Oficina 4", false))
-//        databaseHandler.addOficina(Oficina(4, "Oficina 5", false))
-        // Se agrega una verificación para evitar agregar el usuario administrador repetidamente
-        val adminUserId = databaseHandler.addUser(adminUser)
-
-        if (adminUserId != -1L) {
-            // El usuario administrador se ha insertado correctamente
-            // adminUserId contiene el ID generado para el usuario administrador
-        } else {
-            // Error al insertar el usuario administrador
+        if(!databaseHandler.isUserExists("admin")) {
+            val adminUser = User(1, "admin", "admin", "admin", true)
+            databaseHandler.addUser(adminUser)
         }
+        if(databaseHandler.getOficinasDisponibles().isEmpty() && databaseHandler.getOficinasOcupadas().isEmpty()) {
+        databaseHandler.addOficina(Oficina(0, "Oficina 1", false))
+        databaseHandler.addOficina(Oficina(1, "Oficina 2", false))
+        databaseHandler.addOficina(Oficina(2, "Oficina 3", false))
+        databaseHandler.addOficina(Oficina(3, "Oficina 4", false))
+        databaseHandler.addOficina(Oficina(4, "Oficina 5", false))
+        }
+
+
+//        if (adminUserId != -1L) {
+//        } else {
+//        }
 
         val buttonLogin = findViewById<Button>(R.id.loginButton)
         buttonLogin.setOnClickListener {
