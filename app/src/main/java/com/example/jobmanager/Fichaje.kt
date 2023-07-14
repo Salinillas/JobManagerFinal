@@ -5,6 +5,6 @@ data class Fichaje(
     val username: String,
     val oficina: String,
     val fechaEntrada: String,
-    val fechaSalida: String,
-    val horasTrabajadas: Double
+    var fechaSalida: String,
+    var horasTrabajadas: Double
 )

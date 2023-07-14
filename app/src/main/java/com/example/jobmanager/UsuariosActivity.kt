@@ -1,6 +1,5 @@
 package com.example.jobmanager
 
-import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
@@ -8,32 +7,28 @@ import com.example.jobmanager.Database.DatabaseHandler
 import com.example.jobmanager.Fichaje
 import com.example.jobmanager.User
 
+import android.os.Bundle
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+
 class UsuariosActivity : AppCompatActivity() {
 
-    private lateinit var listView: ListView
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: FichajeAdapter
     private lateinit var databaseHandler: DatabaseHandler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_oficinas)
+        setContentView(R.layout.activity_usuarios)
 
-        listView = findViewById(R.id.listView)
+        recyclerView = findViewById(R.id.recyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        adapter = FichajeAdapter()
+        recyclerView.adapter = adapter
+
         databaseHandler = DatabaseHandler.getInstance(this)
 
-        val users = databaseHandler.getAllUsers()
-        val userFichajes = mutableListOf<String>()
-
-        for (user in users) {
-            val fichajes = databaseHandler.getFichajesByUser(user)
-            if (fichajes.isNotEmpty()) {
-                val lastFichaje = fichajes.last()
-                val horasTrabajadas = lastFichaje.horasTrabajadas
-                val userFichaje = "${user.name}: Último fichaje - ${lastFichaje.fechaSalida}, Horas trabajadas - $horasTrabajadas"
-                userFichajes.add(userFichaje)
-            }
-        }
-
-        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, userFichajes)
-        listView.adapter = adapter
+        val fichajes = databaseHandler.verFichajes()
+        adapter.setFichajes(fichajes)
     }
 }

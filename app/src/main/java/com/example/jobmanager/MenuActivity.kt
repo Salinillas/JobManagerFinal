@@ -2,10 +2,13 @@ package com.example.jobmanager
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+
 
 class MenuActivity : AppCompatActivity() {
 
@@ -17,7 +20,7 @@ class MenuActivity : AppCompatActivity() {
 
         val btnVerOficinas: Button = findViewById(R.id.btnVerOficinas)
         val btnVerFichajes: Button = findViewById(R.id.btnVerFichajes)
-        val btnPanelControl: Button = findViewById(R.id.btnPanelControl)
+        val btnPanelControl: Button = findViewById(R.id.btnGestion)
 
         btnVerOficinas.setOnClickListener {
             // Acción para ver oficinas
@@ -31,8 +34,9 @@ class MenuActivity : AppCompatActivity() {
 
         btnPanelControl.setOnClickListener {
             // Acción para ir al panel de control
-            startActivity(Intent(this, UserConfigActivity::class.java))
+            startActivity(Intent(this, RegisterActivity::class.java))
         }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -43,12 +47,12 @@ class MenuActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                onBackPressed()
+                logout()
                 true
             }
             R.id.action_preguntas_frecuentes -> {
                 // Navegar a la actividad FAQ
-                startActivity(Intent(this, FAQActivity::class.java))
+                faq()
                 true
             }
             R.id.action_cerrar_sesion -> {
@@ -60,8 +64,34 @@ class MenuActivity : AppCompatActivity() {
         }
     }
 
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            val builder = AlertDialog.Builder(this)
+            builder.setMessage("¿Desea salir de JobManager y conservar su sesión?")
+                .setPositiveButton("Sí") { dialog, _ ->
+                    val intent = Intent(Intent.ACTION_MAIN)
+                    intent.addCategory(Intent.CATEGORY_HOME)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                }
+                .setNegativeButton("Cancelar") { dialog, _ ->
+                    dialog.dismiss()
+                }
+            builder.show()
+            return true
+        }
+        return super.onKeyDown(keyCode, event)
+    }
+
+
+
     private fun logout() {
         startActivity(Intent(this, LoginActivity::class.java))
+        finish()
+    }
+
+    private fun faq() {
+        startActivity(Intent(this, FAQActivity::class.java))
         finish()
     }
 }

@@ -2,9 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_pregunddtas_frecuentes"
-        android:title="FAQ" />
+        android:id="@+id/action_preguntas_frecuentes"
+        android:title="FAQ"
+        app:showAsAction="never"/>
     <item
-        android:id="@+id/action_preguntdas_frecuentes"
-        android:title="Cerrar sesión" />
+        android:id="@+id/action_cerrar_sesion"
+        android:title="Cerrar sesión"
+        app:showAsAction="never"/>
 </menu>

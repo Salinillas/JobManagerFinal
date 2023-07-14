@@ -46,13 +46,15 @@
         android:id="@+id/registerButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Registrar"
+        android:text="Registrar usuario"
         android:layout_marginTop="16sp"/>
+
     <Button
-        android:id="@+id/alreadyRegistered"
+        android:id="@+id/borrarButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Ya estoy registrado"
+        android:text="Borrar usuario existente"
         android:layout_marginTop="16sp"/>
+
 
 </LinearLayout>

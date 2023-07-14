@@ -40,12 +40,19 @@ class RegisterActivity : AppCompatActivity() {
             }
         }
 
-        val buttonAlreadyRegistered = findViewById<Button>(R.id.alreadyRegistered)
-        buttonAlreadyRegistered.setOnClickListener {
-            // Regresar a la pantalla de inicio de sesión
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-            finish() // Finalizar la actividad actual
+        val buttonBorrar = findViewById<Button>(R.id.borrarButton)
+        buttonBorrar.setOnClickListener {
+
+            val username = findViewById<EditText>(R.id.nameEditText).text.toString()
+            if(databaseHelper.isUserExists(username)) {
+                databaseHelper.deleteUser(username)
+                Toast.makeText(this, "Usuario borrado correctamente", Toast.LENGTH_SHORT).show()
+            }else{
+                Toast.makeText(this, "Introduce un usuario válido", Toast.LENGTH_SHORT).show()
+
+            }
+
         }
+
     }
 }

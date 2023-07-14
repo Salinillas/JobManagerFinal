@@ -11,12 +11,13 @@
         android:roundIcon="@mipmap/icono_jobmanager"
         android:supportsRtl="true"
         android:theme="@style/Theme.JobManager"
-        tools:targetApi="30">
+        tools:targetApi="s">
+
+
 
         <activity
             android:name=".LoginActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.JobManager.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,22 +26,21 @@
             </intent-filter>
         </activity>
 
+
         <activity
             android:name=".RegisterActivity"
             android:label="@string/register_activity_label" />
-
-        <activity
-            android:name=".FicharUsuario" />
-
         <activity
             android:name=".MenuActivity" />
-
         <activity
             android:name=".OficinasActivity" />
         <activity
             android:name=".UsuariosActivity" />
         <activity
-            android:name=".UserConfigActivity" />
+            android:name=".FAQActivity" />
+        <activity
+            android:name=".FicharUsuario"/>
+
 
     </application>
 

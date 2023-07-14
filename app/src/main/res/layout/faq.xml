@@ -89,7 +89,6 @@
                 android:textColor="@android:color/black"
                 android:paddingBottom="16sp" />
 
-            <!-- Más preguntas y respuestas... -->
 
         </LinearLayout>
     </ScrollView>

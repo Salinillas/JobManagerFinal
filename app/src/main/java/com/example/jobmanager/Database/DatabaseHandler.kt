@@ -138,6 +138,44 @@ class DatabaseHandler constructor(context: Context) :
         db.close()
         return userExists
     }
+    fun buscarFichajeUsuarioConFechaEntradaMasAlta(username: String): Fichaje? {
+        val db = readableDatabase
+        val query =
+            "SELECT * FROM $TABLE_FICHAJES WHERE $KEY_USERNAME = ? AND $KEY_FECHA_SALIDA IS NULL ORDER BY $KEY_FECHA_ENTRADA DESC LIMIT 1"
+        val cursor = db.rawQuery(query, arrayOf(username))
+        val fichaje: Fichaje? = if (cursor.moveToFirst()) {
+            val id = cursor.getInt(cursor.getColumnIndex(KEY_ID))
+            val oficina = cursor.getString(cursor.getColumnIndex(KEY_OFICINA))
+            val fechaEntrada = cursor.getString(cursor.getColumnIndex(KEY_FECHA_ENTRADA))
+            val fechaSalida = ""
+            val horasTrabajadas = cursor.getDouble(cursor.getColumnIndex(KEY_HORAS_TRABAJADAS))
+            Fichaje(id, username, oficina, fechaEntrada, fechaSalida, horasTrabajadas)
+        } else {
+            null
+        }
+        cursor.close()
+        db.close()
+        return fichaje
+    }
+
+    fun getUsuarioOcupanteOficina(nombreOficina: String): String? {
+        val db = readableDatabase
+        val query = "SELECT $TABLE_USERS.$KEY_NAME " +
+                "FROM $TABLE_USERS " +
+                "JOIN $TABLE_FICHAJES ON $TABLE_USERS.$KEY_USERNAME = $TABLE_FICHAJES.$KEY_USERNAME " +
+                "JOIN $TABLE_OFICINAS ON $TABLE_FICHAJES.$KEY_OFICINA = $TABLE_OFICINAS.$KEY_NAME " +
+                "WHERE $TABLE_OFICINAS.$KEY_NAME = ?"
+        val cursor = db.rawQuery(query, arrayOf(nombreOficina))
+        val name: String? = if (cursor.moveToFirst()) {
+            cursor.getString(cursor.getColumnIndex(KEY_NAME))
+        } else {
+            null
+        }
+        cursor.close()
+        db.close()
+
+        return name
+    }
 
     fun saveUser(user: User) {
         val db = writableDatabase
@@ -192,8 +230,7 @@ class DatabaseHandler constructor(context: Context) :
         val horasTrabajadas = diff.toDouble() / (1000 * 60 * 60)
         return horasTrabajadas
     }
-
-    fun verFichajes(): List<Fichaje> {
+    fun getAllFichajes(): List<Fichaje> {
         val fichajes = mutableListOf<Fichaje>()
         val db = readableDatabase
         val query = "SELECT * FROM $TABLE_FICHAJES"
@@ -213,43 +250,60 @@ class DatabaseHandler constructor(context: Context) :
         db.close()
         return fichajes
     }
-    fun getFichaje(id: Int): Fichaje? {
+    fun verFichajes(): List<Fichaje> {
+        val fichajes = mutableListOf<Fichaje>()
         val db = readableDatabase
-        val query = "SELECT * FROM $TABLE_FICHAJES WHERE $KEY_ID = ?"
-        val cursor = db.rawQuery(query, arrayOf(id.toString()))
-        val fichaje: Fichaje? = if (cursor.moveToFirst()) {
+        val query = "SELECT * FROM $TABLE_FICHAJES"
+        val cursor = db.rawQuery(query, null)
+        while (cursor.moveToNext()) {
+            val id = cursor.getInt(cursor.getColumnIndex(KEY_ID))
             val username = cursor.getString(cursor.getColumnIndex(KEY_USERNAME))
             val oficina = cursor.getString(cursor.getColumnIndex(KEY_OFICINA))
             val fechaEntrada = cursor.getString(cursor.getColumnIndex(KEY_FECHA_ENTRADA))
-            val fechaSalida = cursor.getString(cursor.getColumnIndex(KEY_FECHA_SALIDA))
+            var fechaSalida = cursor.getString(cursor.getColumnIndex(KEY_FECHA_SALIDA))
+            if (fechaSalida==null) fechaSalida=""
             val horasTrabajadas = cursor.getDouble(cursor.getColumnIndex(KEY_HORAS_TRABAJADAS))
 
+            val fichaje = Fichaje(id, username, oficina, fechaEntrada, fechaSalida, horasTrabajadas)
+            fichajes.add(fichaje)
+        }
+        cursor.close()
+        db.close()
+        return fichajes
+    }
+
+    fun getFichaje(username: String): Fichaje? {
+        val db = readableDatabase
+        val query = "SELECT * FROM $TABLE_FICHAJES WHERE $KEY_USERNAME = ? AND $KEY_OFICINA" +
+                " IN (SELECT $KEY_NAME FROM $TABLE_OFICINAS WHERE $KEY_OCUPADA = 1)" +
+                " ORDER BY $KEY_FECHA_ENTRADA DESC"
+        val cursor = db.rawQuery(query, arrayOf(username))
+        val fichaje: Fichaje? = if (cursor.moveToFirst()) {
+            val id = cursor.getInt(cursor.getColumnIndex(KEY_ID))
+            val username = cursor.getString(cursor.getColumnIndex(KEY_USERNAME))
+            val oficina = cursor.getString(cursor.getColumnIndex(KEY_OFICINA))
+            val fechaEntrada = cursor.getString(cursor.getColumnIndex(KEY_FECHA_ENTRADA))
+            val fechaSalida = ""
+            val horasTrabajadas = cursor.getDouble(cursor.getColumnIndex(KEY_HORAS_TRABAJADAS))
             Fichaje(id, username, oficina, fechaEntrada, fechaSalida, horasTrabajadas)
         } else {
             null
         }
         cursor.close()
-        //db.close()
+        db.close()
         return fichaje
     }
 
-    fun getFichajesByUser(user: User): List<Fichaje> {
-        val fichajes = mutableListOf<Fichaje>()
+
+    fun usuarioTieneFichajeAbierto(user: User): Boolean {
         val db = readableDatabase
-        val query = "SELECT * FROM $TABLE_FICHAJES WHERE $KEY_USERNAME = ?"
+        val query = "SELECT COUNT(*) FROM $TABLE_FICHAJES WHERE $KEY_USERNAME = ? AND $KEY_FECHA_SALIDA IS NULL"
         val cursor = db.rawQuery(query, arrayOf(user.username))
-        while (cursor.moveToNext()) {
-            val id = cursor.getInt(cursor.getColumnIndex(KEY_ID))
-            val oficina = cursor.getString(cursor.getColumnIndex(KEY_OFICINA))
-            val fechaEntrada = cursor.getString(cursor.getColumnIndex(KEY_FECHA_ENTRADA))
-            val fechaSalida = cursor.getString(cursor.getColumnIndex(KEY_FECHA_SALIDA))
-            val horasTrabajadas = cursor.getDouble(cursor.getColumnIndex(KEY_HORAS_TRABAJADAS))
-            val fichaje = Fichaje(id, user.username, oficina, fechaEntrada, fechaSalida, horasTrabajadas)
-            fichajes.add(fichaje)
-        }
+        cursor.moveToFirst()
+        val count = cursor.getInt(0)
         cursor.close()
-        //db.close()
-        return fichajes
+        db.close()
+        return count > 0
     }
 
     fun getOficinasOcupadas(): List<Oficina> {
@@ -312,29 +366,20 @@ class DatabaseHandler constructor(context: Context) :
         //db.close()
         return oficina
     }
-    fun cambiarEstadoOficina(nombre: String) {
+
+    fun cambiarOficinaAOcupada(nombreOficina: String) {
         val db = writableDatabase
-        val oficina = getOficina(nombre)
-        if (oficina != null) {
-            val nuevoEstado = !oficina.ocupada
-            val values = ContentValues()
-            values.put(KEY_OCUPADA, if (nuevoEstado) 1 else 0)
-            db.update(TABLE_OFICINAS, values, "$KEY_NAME = ?", arrayOf(nombre))
-        }
-        //db.close()
-    }
-    fun getUltimoFichajeByUser(username: String): String? {
-        val db = readableDatabase
-        val query = "SELECT $KEY_FECHA_SALIDA FROM $TABLE_FICHAJES WHERE $KEY_USERNAME = ? ORDER BY $KEY_FECHA_SALIDA DESC LIMIT 1"
-        val cursor = db.rawQuery(query, arrayOf(username))
-        val fechaHora: String? = if (cursor.moveToFirst()) {
-            cursor.getString(cursor.getColumnIndex(KEY_FECHA_SALIDA))
-        } else {
-            null
-        }
-        cursor.close()
+        val values = ContentValues()
+        values.put(KEY_OCUPADA, 1)
+        db.update(TABLE_OFICINAS, values, "$KEY_NAME = ?", arrayOf(nombreOficina))
         db.close()
-        return fechaHora
     }
 
+    fun cambiarOficinaANoOcupada(nombreOficina: String) {
+        val db = writableDatabase
+        val values = ContentValues()
+        values.put(KEY_OCUPADA, 0)
+        db.update(TABLE_OFICINAS, values, "$KEY_NAME = ?", arrayOf(nombreOficina))
+        db.close()
+    }
 }

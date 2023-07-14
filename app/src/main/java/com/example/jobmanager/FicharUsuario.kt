@@ -1,81 +1,156 @@
 package com.example.jobmanager
 
+
+import android.content.Intent
 import android.os.Bundle
-import android.widget.*
+import android.view.KeyEvent
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.jobmanager.Database.DatabaseHandler
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
+
+
 class FicharUsuario : AppCompatActivity() {
 
-    private lateinit var disponiblesLayout: LinearLayout
-    private lateinit var ocupadasLayout: LinearLayout
+    private lateinit var disponiblesRecyclerView: RecyclerView
+    private lateinit var ocupadasRecyclerView: RecyclerView
     private lateinit var btnFicharEntrada: Button
     private lateinit var btnFicharSalida: Button
     private lateinit var oficinaEditText: EditText
     private lateinit var databaseHandler: DatabaseHandler
+    private lateinit var disponiblesAdapter: OficinaAdapter
+    private lateinit var ocupadasAdapter: OficinaAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.fichar_usuario)
 
-        disponiblesLayout = findViewById(R.id.disponiblesLayout)
-        ocupadasLayout = findViewById(R.id.ocupadasLayout)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        disponiblesRecyclerView = findViewById(R.id.disponiblesRecyclerView)
+        ocupadasRecyclerView = findViewById(R.id.ocupadasRecyclerView)
         btnFicharEntrada = findViewById(R.id.btnFicharEntrada)
         btnFicharSalida = findViewById(R.id.btnFicharSalida)
         oficinaEditText = findViewById(R.id.officeSelector)
 
         databaseHandler = DatabaseHandler.getInstance(this)
 
-        // Mostrar las oficinas disponibles
-        val oficinasDisponibles = getOficinasDisponibles()
-        mostrarOficinas(oficinasDisponibles, disponiblesLayout)
+        // Configurar RecyclerViews
+        disponiblesRecyclerView.layoutManager = LinearLayoutManager(this)
+        ocupadasRecyclerView.layoutManager = LinearLayoutManager(this)
 
-        // Mostrar las oficinas ocupadas
+        // Obtener las oficinas disponibles y ocupadas
+        val oficinasDisponibles = getOficinasDisponibles()
         val oficinasOcupadas = getOficinasOcupadas()
-        mostrarOficinas(oficinasOcupadas, ocupadasLayout)
+
+        // Crear los adapters para los RecyclerViews
+        disponiblesAdapter = OficinaAdapter(oficinasDisponibles,databaseHandler)
+        ocupadasAdapter = OficinaAdapter(oficinasOcupadas,databaseHandler)
+
+        // Asignar los adapters a los RecyclerViews
+        disponiblesRecyclerView.adapter = disponiblesAdapter
+        ocupadasRecyclerView.adapter = ocupadasAdapter
 
         btnFicharEntrada.setOnClickListener {
-            btnFicharEntrada.isEnabled = false
-            btnFicharSalida.isEnabled = true
             // Obtener la oficina seleccionada por el usuario
             val oficinaSeleccionada = obtenerOficinaSeleccionada()
-            if (oficinaSeleccionada != null) {
-                // Obtener la fecha y hora actual
-                val fechaHoraActual = obtenerFechaHoraActual()
+            if (oficinaSeleccionada != null && databaseHandler.getCurrentUser()!=null
+                && !databaseHandler.usuarioTieneFichajeAbierto(databaseHandler.getCurrentUser()!!)){
+                if (oficinaSeleccionada.ocupada)
+                    mostrarMensaje("Oficina ocupada, seleccione otra para fichar entrada")
+                else {
 
-                // Realizar el fichaje y almacenarlo en la base de datos
-                realizarFichaje(oficinaSeleccionada, fechaHoraActual)
+                    realizarFichajeEntrada(oficinaSeleccionada)
 
-                // Mostrar un mensaje de éxito
-                mostrarMensaje("Fichaje realizado correctamente")
+                    // Actualizar la lista de oficinas disponibles y ocupadas
+                    disponiblesAdapter.setOficinas(getOficinasDisponibles())
+                    ocupadasAdapter.setOficinas(getOficinasOcupadas())
 
+                    // Mostrar un mensaje de éxito
+                    mostrarMensaje("Fichaje de entrada realizado correctamente")
+                }
             } else {
-                mostrarMensaje("Por favor, seleccione una oficina")
+                mostrarMensaje("Por favor, seleccione una oficina válida")
             }
         }
 
         btnFicharSalida.setOnClickListener {
-            btnFicharSalida.isEnabled = false
-            btnFicharEntrada.isEnabled = true
             // Obtener la oficina seleccionada por el usuario
             val oficinaSeleccionada = obtenerOficinaSeleccionada()
-            if (oficinaSeleccionada != null) {
-                // Obtener la fecha y hora actual
-                val fechaHoraActual = obtenerFechaHoraActual()
+            if (oficinaSeleccionada != null && databaseHandler.getCurrentUser()!=null
+                && databaseHandler.usuarioTieneFichajeAbierto(databaseHandler.getCurrentUser()!!)) {
+                if (!oficinaSeleccionada.ocupada) {
+                    mostrarMensaje("Oficina no ocupada, seleccione otra para fichar salida")
+                    // Obtener la fecha y hora actual
+                }else {
+                    val fechaHoraActual = obtenerFechaHoraActual()
 
-                // Realizar el fichaje y almacenarlo en la base de datos
-                realizarFichaje(oficinaSeleccionada, fechaHoraActual)
+                    // Realizar el fichaje y almacenarlo en la base de datos
+                    realizarFichajeSalida(oficinaSeleccionada, fechaHoraActual)
 
-                // Mostrar un mensaje de éxito
-                mostrarMensaje("Fichaje de salida realizado correctamente")
+                    // Actualizar la lista de oficinas disponibles y ocupadas
+                    disponiblesAdapter.setOficinas(getOficinasDisponibles())
+                    ocupadasAdapter.setOficinas(getOficinasOcupadas())
+                }
+
             } else {
-                mostrarMensaje("Por favor, seleccione una oficina")
+                mostrarMensaje("Por favor, seleccione una oficina válida")
+                }
             }
         }
 
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                logout()
+                true
+            }
+            R.id.action_preguntas_frecuentes -> {
+                // Navegar a la actividad FAQ
+                faq()
+                true
+            }
+            R.id.action_cerrar_sesion -> {
+                // Cerrar sesión y navegar a la actividad de inicio de sesión
+                logout()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            val builder = AlertDialog.Builder(this)
+            builder.setMessage("¿Desea salir de JobManager y conservar su sesión?")
+                .setPositiveButton("Sí") { _, _ ->
+                    val intent = Intent(Intent.ACTION_MAIN)
+                    intent.addCategory(Intent.CATEGORY_HOME)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                }
+                .setNegativeButton("Cancelar") { dialog, _ ->
+                    dialog.dismiss()
+                }
+            builder.show()
+            return true
+        }
+        return super.onKeyDown(keyCode, event)
     }
 
     private fun getOficinasDisponibles(): List<Oficina> {
@@ -84,14 +159,6 @@ class FicharUsuario : AppCompatActivity() {
 
     private fun getOficinasOcupadas(): List<Oficina> {
         return databaseHandler.getOficinasOcupadas()
-    }
-
-    private fun mostrarOficinas(oficinas: List<Oficina>, layout: LinearLayout) {
-        for (oficina in oficinas) {
-            val textView = TextView(this)
-            textView.text = oficina.nombre
-            layout.addView(textView)
-        }
     }
 
     private fun obtenerOficinaSeleccionada(): Oficina? {
@@ -105,17 +172,49 @@ class FicharUsuario : AppCompatActivity() {
         return currentDateTime.format(formatter)
     }
 
-    private fun realizarFichaje(oficina: Oficina, fechaHora: String) {
+    private fun realizarFichajeEntrada(oficina: Oficina) {
+        val fechaHora = obtenerFechaHoraActual()
         val usuario = databaseHandler.getCurrentUser()
         if (usuario != null) {
             databaseHandler.addFichaje(usuario.username, oficina.nombre, fechaHora)
-            databaseHandler.cambiarEstadoOficina(oficina.nombre)
+            databaseHandler.cambiarOficinaAOcupada(oficina.nombre)
         } else {
             mostrarMensaje("No se ha podido realizar el fichaje")
         }
     }
 
+    private fun realizarFichajeSalida(oficina: Oficina, fechaHora: String) {
+        val usuario = databaseHandler.getCurrentUser()
+        if (usuario!=null) {
+            val fichaje = databaseHandler.getFichaje(usuario.username)
+            if (fichaje != null && fichaje.fechaSalida == "") {
+                val horasTrabajadas =
+                    databaseHandler.calcularHorasTrabajadas(fichaje.fechaEntrada, fechaHora)
+                fichaje.fechaSalida = fechaHora
+                fichaje.horasTrabajadas = horasTrabajadas
+                databaseHandler.updateFichaje(fichaje)
+                databaseHandler.cambiarOficinaANoOcupada(oficina.nombre)
+                mostrarMensaje("Fichaje de salida realizado correctamente. Horas trabajadas: " + horasTrabajadas)
+            } else {
+                mostrarMensaje("No se ha encontrado el fichaje anterior")
+            }
+        }
+    }
+
+
+
+
     private fun mostrarMensaje(mensaje: String) {
         Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show()
-        }
+    }
+
+    private fun logout() {
+        startActivity(Intent(this, LoginActivity::class.java))
+        finish()
+    }
+
+    private fun faq() {
+        startActivity(Intent(this, FAQActivity::class.java))
+        finish()
+    }
 }

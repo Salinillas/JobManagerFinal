@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0sp"
@@ -13,66 +14,57 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/mensajeTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16sp"
-        android:textAppearance="?android:textAppearanceMedium" />
+            <TextView
+                android:text="Oficinas disponibles"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16sp"
+                android:textAppearance="?android:textAppearanceMedium" />
 
-    <TextView
-        android:text="Oficinas disponibles"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16sp"
-        android:textAppearance="?android:textAppearanceMedium" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/disponiblesRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8sp" />
 
-    <LinearLayout
-        android:id="@+id/disponiblesLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16sp" />
+            <TextView
+                android:text="Oficinas ocupadas"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16sp"
+                android:textAppearance="?android:textAppearanceMedium" />
 
-    <TextView
-        android:text="Oficinas ocupadas"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16sp"
-        android:textAppearance="?android:textAppearanceMedium" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/ocupadasRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8sp" />
 
-    <LinearLayout
-        android:id="@+id/ocupadasLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16sp" />
+            <EditText
+                android:id="@+id/officeSelector"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ingrese el número de la oficina"
+                android:minHeight="48dp" />
 
-    <EditText
-        android:id="@+id/officeSelector"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Ingrese el número de la oficina"
-        android:minHeight="48dp" />
+            <Button
+                android:id="@+id/btnFicharEntrada"
+                android:layout_width="match_parent"
+                android:layout_marginTop="2sp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Fichar entrada" />
 
-    <Button
-        android:id="@+id/btnFicharEntrada"
-        android:layout_width="match_parent"
-        android:layout_marginTop="2sp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Fichar entrada" />
-
-    <Button
-        android:id="@+id/btnFicharSalida"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Fichar salida" />
+            <Button
+                android:id="@+id/btnFicharSalida"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Fichar salida" />
 
         </LinearLayout>
     </ScrollView>

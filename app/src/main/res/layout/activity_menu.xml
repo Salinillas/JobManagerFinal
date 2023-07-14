@@ -7,7 +7,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="Ver Oficinas" />
+        android:text="@string/ver_oficinas" />
 
     <Button
         android:id="@+id/btnVerFichajes"
@@ -16,15 +16,15 @@
         android:layout_below="@id/btnVerOficinas"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
-        android:text="Ver Fichajes" />
+        android:text="@string/ver_fichajes" />
 
     <Button
-        android:id="@+id/btnPanelControl"
+        android:id="@+id/btnGestion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/btnVerFichajes"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
-        android:text="Panel de Control" />
+        android:text="@string/gesti_n_de_usuarios" />
 
 </RelativeLayout>
